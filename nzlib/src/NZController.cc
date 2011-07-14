@@ -63,7 +63,6 @@ void NZController::loop(void) {
 
   while (mSocket->isConnected() &&
 	 (data = mSocket->getNextLine()).length() > 0) {
-    std::cout << "\e[32m" << data << "\e[0m" << std::endl;
 
     if (mHostMd5.length() == 0)
       cutSalutString(data);
@@ -127,9 +126,6 @@ void NZController::cutSalutString(const std::string& salut) {
   mHostMd5 = md5hash;
   mClientHost = clientIp;
   mClientPort = clientPort;
-
-  std::cout << "host md5: " << mHostMd5 << std::endl;
-  std::cout << "Client: " << mClientHost << ":" << mClientPort << std::endl;
 
   mSocket->sendData("auth_ag ext_user none none");
 }

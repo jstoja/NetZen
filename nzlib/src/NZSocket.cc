@@ -98,12 +98,9 @@ void NZSocket::sendData(const std::string& data) {
   if (send(mSock, data.c_str(), data.length(), 0) == -1)
     handleError();
 
-  std::cout << "\e[31m" << data << "\e[0m";
-
   if (data[data.length() - 1] != '\n') {
     if (send(mSock, "\n", 1, 0) == -1)
       handleError();
-    std::cout << std::endl;
   }
 }
 
