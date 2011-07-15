@@ -165,6 +165,15 @@ void NZController::changeStatus(const std::string& status) {
   mSocket->sendData(command);
 }
 
+void NZController::sendMessage(const std::string& contactTo, const std::string& message) {
+  std::string cmd;
+
+  cmd.append("user_cmd msg_user ").append(contactTo).append(" msg ");
+  cmd.append(NZController::urlEncode(message));
+
+  mSocket->sendData(cmd);
+}
+
 void NZController::cutCmd(const std::string& cmd) {
   char fromLogin[256];
   char command[256];
@@ -197,6 +206,7 @@ void NZController::cutCmd(const std::string& cmd) {
 }
 
 #define UNENCODED "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+#define MKUCHAR(x) ((x) < 0 ? 127 + 0 - (x) : (x))
 
 std::string NZController::urlEncode(const std::string& str) {
   size_t pos = 0;
@@ -207,13 +217,12 @@ std::string NZController::urlEncode(const std::string& str) {
   memset(buf, 0, 4);
   while (pos != std::string::npos) {
     nos = str.find_first_not_of(UNENCODED, pos);
+      ret += str.substr(pos, nos - pos);
     if (nos != std::string::npos) {
-      ret += str.substr(pos, nos);
-      snprintf(buf, 4, "%%%02X", (unsigned int)str[nos]);
+      snprintf(buf, 4, "%%%02X", MKUCHAR(str[nos]));
       ret += buf;
       pos = nos + 1;
     } else {
-      ret += str.substr(pos, nos);
       pos = nos;
     }
   }

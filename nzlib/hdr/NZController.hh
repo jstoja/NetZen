@@ -33,6 +33,7 @@ public:
   void login(const std::string& loginName, const std::string& loginPwd,
 	     const std::string& location, const std::string& userData);
   void changeStatus(const std::string& status);
+  void sendMessage(const std::string& contactTo, const std::string& message);
 
   void loop(void);
 
