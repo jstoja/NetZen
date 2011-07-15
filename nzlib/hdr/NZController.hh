@@ -44,6 +44,10 @@ public:
   static std::string md5(const std::string str);
 
 private:
+  // Forbid copy
+  NZController(const NZController& other) { };
+  NZController operator=(const NZController& other) { };
+
   void cutSalutString(const std::string& salut);
   void cutCmd(const std::string& cmd);
 
