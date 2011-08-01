@@ -45,8 +45,8 @@ public:
 
 private:
   // Forbid copy
-  NZController(const NZController& other) { };
-  NZController operator=(const NZController& other) { };
+  NZController(const NZController&) { };
+  NZController operator=(const NZController&) { };
 
   void cutSalutString(const std::string& salut);
   void cutCmd(const std::string& cmd);
