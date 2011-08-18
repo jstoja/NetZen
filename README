@@ -5,3 +5,54 @@ NetSoul is a protocol used in IONIS schools to trace connection time,
 access services and chat between persons.
 
 NetZen is a client, it allows connection to the server and chat.
+
+I. Important information
+
+  NetZen is distrubuted alone, without garantee of support, or even
+  usability. It has been made in the hope it will be useful, but
+  the author connot be responsible of any damage the use of this software
+  could make.
+
+  This software has normally been tested, but it can last all sorts of
+  bugs, as I (the author) don't garantee I fixed all bugs. I'll try to
+  find them and fix them as long as I can. Poeple can help me by reporting
+  bugs in official bug report, with or without a patch.
+
+II. How to install
+
+  1. Compatibility :
+
+    Known to be compatible (tested) :
+      - Arch Linux x86_64
+      - Mac OS X 10.7 (Lion)
+
+    Should be plainly compatible, but untested
+      - All linux i386 and x86_63
+      - All Mac OS X Intel
+      - BSD
+
+     Should be incompatible, but not tested yet :
+      - Windows
+
+    Other platforms are unknown state.
+
+  2. Prerequistes :
+    C++ compiler, GNU make
+    For nzgui : Qt 4 (At least 4.6)
+
+  3. How to make :
+    (On BSD other than Mac OS X, replace make by gnumake)
+    cd (folder where netzen sources are)
+    make
+
+    Libraries (.a) are built in lib/ directory, while binaries are
+    in bin/ directory.
+
+    Or you can make use of pre-made binaries. (See below)
+
+    Main Program is called nzgui, use ./bin/nzgui to test it
+    ( Under OS X : open bin/nzgui.app )
+
+III. Links
+    Git : http://github.com/adaedra/NetZen/
+    Other ressources : http://sourceforge.net/projects/anetzen/

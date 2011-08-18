@@ -12,9 +12,15 @@ LN		 = ln -s
 MKDIR		 = mkdir -p
 AR		 = ar rc
 RANLIB		 = ranlib
+SYSTEM		 = ${shell uname -s}
 
 ifeq "$(LANGUAGE)" "cpp"
 LD		 = $(CXX)
+endif
+
+ifeq "$(SYSTEM)" "Darwin"
+CC		:= $(CC) -arch i386
+CXX		:= $(CC) -arch i386
 endif
 
 CFLAGS		+= -Wall -Wextra -std=c99 -I${HDRDIR} -ggdb
