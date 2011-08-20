@@ -16,7 +16,6 @@
 
 #include <QtCore/QTimerEvent>
 #include "NZControllerProxy.hh"
-#include "NZControllerDelegate.hh"
 
 NZControllerProxy::NZControllerProxy(void) {
   mController = new NZController(this);
