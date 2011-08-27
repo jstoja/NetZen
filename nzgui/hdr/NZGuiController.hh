@@ -21,6 +21,7 @@
 #include <QtCore/QList>
 #include <QtGui/QIcon>
 #include "NZContact.hh"
+#include "NZSettings.hh"
 
 class NZMainWindow;
 class NZControllerProxy;
@@ -37,6 +38,8 @@ public:
 
   NZContact* me(void) const;
   QIcon guiIcon(void) const;
+
+  NZSettings* settings();
 
 public slots:
   void showMainWindow(void);
@@ -83,6 +86,9 @@ private:
   QString mUserPwd;
   QString mUserLocation;
   QString mUserData;
+
+  NZSettings mSettings;
+  bool mContactsChanged;
 
   static NZGuiController* mInstance;
 };

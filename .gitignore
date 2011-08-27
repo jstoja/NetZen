@@ -6,3 +6,4 @@ bin
 lib
 gen
 *.app
+qmake.mk

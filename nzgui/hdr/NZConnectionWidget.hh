@@ -42,6 +42,7 @@ public slots:
   void collapseServer(void);
   void expandUser(void);
   void somethingChanged(void);
+  void uiReady(void);
 
 signals:
   void connectionRequested(QString hostName, quint16 hostPort, QString userName, QString userPwd,

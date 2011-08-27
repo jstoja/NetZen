@@ -19,6 +19,7 @@
 #include "NZContactListWidget.hh"
 #include "NZContact.hh"
 #include "NZContactModel.hh"
+#include "NZGuiController.hh"
 
 NZContactListWidget::NZContactListWidget(QWidget* parent) : QTreeView(parent) {
   setIconSize(QSize(32, 32));
@@ -82,3 +83,15 @@ void NZContactListWidget::itemActive(const QModelIndex& i) {
   emit newChatRequested(who);
 }
 
+void NZContactListWidget::saveContacts(void) {
+  int i = 0;
+  QStringList contacts;
+
+  while (i < mModel->rowCount(QModelIndex())) {
+    contacts.append(mModel->contactForIndex(i)->login());
+    i++;
+  }
+
+  NZGuiController::instance()->settings()->setKey("adaedra.netzen.nzgui.contacts",
+						  contacts);
+}

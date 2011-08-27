@@ -73,10 +73,23 @@ NZGuiController::NZGuiController(QObject* parent) : QObject(parent),
 	  this, SLOT(statusChangeRequested(NZContact::Status)));
   connect(controller, SIGNAL(proxyReceivedMessage(QString, QString)),
 	  this, SLOT(receivedMessagePrivate(QString, QString)));
+
+  mContactsChanged = false;
+  mSettings.load();
 }
 
 NZGuiController::~NZGuiController(void) {
   mainWindow->close();
+
+  if (mContactsChanged) {
+    qDebug("Save contacts");
+    mainWindow->saveContacts();
+  }
+
+  if (mSettings.isDirty()) {
+    qDebug("Save settings");
+    mSettings.save();
+  }
 
   delete mainWindow;
   delete controller;
@@ -89,6 +102,7 @@ NZGuiController::~NZGuiController(void) {
 
 void NZGuiController::showMainWindow(void) {
   mainWindow->show();
+  mainWindow->uiReady();
 }
 
 void NZGuiController::addContact(void) {
@@ -106,6 +120,7 @@ void NZGuiController::addContact(void) {
 
   NZContact* nc = new NZContact(newContact);
   mContactList.append(nc);
+  mContactsChanged = true;
   emit contactAdded(nc);
 }
 
@@ -122,6 +137,7 @@ void NZGuiController::removeContact(NZContact* contact) {
       return ;
   }
   mContactList.removeOne(contact);
+  mContactsChanged = true;
   contact->deleteLater();
 }
 
@@ -173,6 +189,17 @@ void NZGuiController::connectionRequested(QString hostName, quint16 hostPort,
   loginChangePrivate(userName);
   emit connectionBegin();
 
+  if (mSettings.stringKey("adaedra.netzen.nzgui.host") != hostName)
+    mSettings.setKey("adaedra.netzen.nzgui.host", hostName);
+  if (mSettings.intKey("adaedra.netzen.nzgui.host.port") != hostPort)
+    mSettings.setKey("adaedra.netzen.nzgui.host.port", (int)hostPort);
+  if (mSettings.stringKey("adaedra.netzen.nzgui.user") != userName)
+    mSettings.setKey("adaedra.netzen.nzgui.user", userName);
+  if (mSettings.stringKey("adaedra.netzen.nzgui.location") != userLocation)
+    mSettings.setKey("adaedra.netzen.nzgui.location", userLocation);
+  if (mSettings.stringKey("adaedra.netzen.nzgui.userData") != userData)
+    mSettings.setKey("adaedra.netzen.nzgui.userData", userData);
+
   mUserLogin = userName;
   mUserPwd = userPwd;
   mUserLocation = userLocation;
@@ -193,11 +220,33 @@ void NZGuiController::authAllowedPrivate(void) {
 }
 
 void NZGuiController::authSucceededPrivate(void) {
-  // Reserved for later use
   controller->changeStatus("actif");
   emit authSucceeded();
   mMe->setStatus(NZContact::nzActif);
   emit statusChanged(NZContact::nzActif);
+
+  QStringList contactList = mSettings.stringListKey("adaedra.netzen.nzgui.contacts");
+
+
+  int i = 0;
+  if (mContactList.count() > 0) {
+    while (i < mContactList.count()) {
+      delete mContactList.at(i);
+      i++;
+    }
+
+    mContactList.clear();
+  }
+
+  i = 0;
+  while (i < contactList.count()) {
+    NZContact* c = new NZContact(contactList.at(i));
+    
+    mContactList.append(c);
+    emit contactAdded(c);
+
+    i++;
+  }
 }
 
 void NZGuiController::loginChangePrivate(QString login) {
@@ -294,4 +343,8 @@ void NZGuiController::receivedMessagePrivate(QString contactFrom, QString messag
 
   NZMessage* m = new NZMessage(cv, message, nzReceivedMessage);
   cv->addMessage(m);
+}
+
+NZSettings* NZGuiController::settings(void) {
+  return &mSettings;
 }

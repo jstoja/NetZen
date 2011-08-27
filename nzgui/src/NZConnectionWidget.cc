@@ -72,7 +72,8 @@ NZConnectionWidget::NZConnectionWidget(QWidget* parent) : QWidget(parent) {
 
   mSavePwd = new QCheckBox;
   mSavePwd->setText(tr("Save password"));
-  mSavePwd->setChecked(true);
+  // mSavePwd->setChecked(true);
+  mSavePwd->setEnabled(false);
 
   mEditServer = new QPushButton;
   mEditServer->setText(tr("Edit"));
@@ -196,6 +197,9 @@ void NZConnectionWidget::collapseServer(void) {
 }
 
 void NZConnectionWidget::expandUser(void) {
+  mLocation->setVisible(false);
+  mLocation->setVisible(true);
+  mUserLayout->labelForField(mLocation)->setVisible(true);
   mUserMore->setVisible(false);
   mUserData->setVisible(true);
   mUserLayout->labelForField(mUserData)->setVisible(true);
@@ -229,4 +233,46 @@ void NZConnectionWidget::connectionRequestedPrivate(void) {
   emit connectionRequested(mHostName->text(), mHostPort->value(),
 			   mUserLogin->text(), mUserPwd->text(),
 			   mLocation->text(), mUserData->text());
+}
+
+void NZConnectionWidget::uiReady(void) {
+  NZSettings* s = NZGuiController::instance()->settings();
+
+  if (s->keyExists("adaedra.netzen.nzgui.host")) {
+    QString hostKey = s->stringKey("adaedra.netzen.nzgui.host");
+
+    if (hostKey != "ns-server.epitech.eu") {
+      expandServer();
+      mHostName->setText(hostKey);
+    }
+  }
+
+  if (s->keyExists("adaedra.netzen.nzgui.host.port")) {
+    quint16 portKey = s->intKey("adaedra.netzen.nzgui.host.port");
+
+    if (portKey != 4242) {
+      expandServer();
+      mHostPort->setValue(portKey);
+    }
+  }
+
+  if (s->keyExists("adaedra.netzen.nzgui.user"))
+    mUserLogin->setText(s->stringKey("adaedra.netzen.nzgui.user"));
+
+  if (s->keyExists("adaedra.netzen.nzgui.location")) {
+    mLocation->setText(s->stringKey("adaedra.netzen.nzgui.location"));
+    mLocation->setVisible(false);
+    mUserLayout->labelForField(mLocation)->setVisible(false);    
+  }
+
+  if (mUserLogin->text() != "") {
+    if (mUserPwd->text() != "")
+      emit connectionRequested(mHostName->text(), mHostPort->value(),
+			       mUserLogin->text(), mUserPwd->text(),
+			       mLocation->text(), mUserData->text());
+    else
+      mUserPwd->setFocus();
+  } else {
+    mUserLogin->setFocus();
+  }
 }

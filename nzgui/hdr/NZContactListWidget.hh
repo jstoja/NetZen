@@ -41,6 +41,7 @@ public slots:
   void contactUpdated(NZContact* contact);
   void rightClicked(const QPoint& where);
   void removeContactAction(void);
+  void saveContacts(void);
 
 private slots:
   void itemActive(const QModelIndex& i);

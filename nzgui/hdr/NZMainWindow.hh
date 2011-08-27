@@ -61,6 +61,8 @@ public slots:
   void authSucceeded(void);
   void connectionReset(void);
   void loginChanged(QString login);
+  void saveContacts(void);
+  void uiReady(void);
 
 private:
   QToolBar*		mainToolBar;

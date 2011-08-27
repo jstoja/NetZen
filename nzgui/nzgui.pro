@@ -19,6 +19,7 @@ SOURCES          = NZAddChatDialog.cc      \
                    NZGuiController.cc      \
                    NZMainWindow.cc         \
                    NZMessage.cc            \
+                   NZSettings.cc           \
                    NZSideBarWidget.cc      \
                    NZStatusWidget.cc       \
                    NZWaitWidget.cc         \
@@ -36,6 +37,7 @@ HEADERS          = NZAddChatDialog.hh      \
                    NZGuiController.hh      \
                    NZMainWindow.hh         \
                    NZMessage.hh            \
+                   NZSettings.hh           \
                    NZSideBarWidget.hh      \
                    NZStatusWidget.hh       \
                    NZWaitWidget.hh

@@ -203,3 +203,10 @@ void NZMainWindow::loginChanged(QString login) {
   statusWidget->setUserLogin(login);
 }
 
+void NZMainWindow::saveContacts(void) {
+  contactList->saveContacts();
+}
+
+void NZMainWindow::uiReady(void) {
+  connectionWidget->uiReady();
+}
