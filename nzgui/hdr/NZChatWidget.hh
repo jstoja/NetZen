@@ -18,6 +18,7 @@
 #define NZCHATWIDGET_HH_
 
 #include <QtGui/QWidget>
+#include "NZContact.hh"
 
 class NZConversation;
 class NZChatView;
@@ -37,6 +38,7 @@ public:
 
 public slots:
   void sendMessage(void);
+  void contactStatusChange(NZContact* who, NZContact::Status status);
 
 protected:
   void resizeEvent(QResizeEvent*);

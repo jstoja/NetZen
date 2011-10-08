@@ -67,11 +67,13 @@ void NZControllerProxy::userStatusChange(const std::string& user, const std::str
 }
 
 void NZControllerProxy::userLogin(const std::string& user) {
-  emit proxyUserLogin(QString::fromStdString(user));
+  // emit proxyUserLogin(QString::fromStdString(user));
+  emit proxyUserStatusChange(QString::fromStdString(user), QString("connection"));
 }
 
 void NZControllerProxy::userLogout(const std::string& user) {
-  emit proxyUserLogout(QString::fromStdString(user));
+  // emit proxyUserLogout(QString::fromStdString(user));
+  emit proxyUserStatusChange(QString::fromStdString(user), QString("disconnected"));
 }
 
 void NZControllerProxy::connectionStatusChange(bool connected) {
@@ -96,4 +98,16 @@ void NZControllerProxy::close(void) {
 
 bool NZControllerProxy::isConnected(void) const {
   return mController->socket()->isConnected();
+}
+
+void NZControllerProxy::locationChange(const std::string& user, const std::string& location) {
+  emit proxyLocationChange(QString::fromStdString(user), QString::fromStdString(location));
+}
+
+void NZControllerProxy::watchUser(QString user) {
+  mController->watchUser(user.toStdString());
+}
+
+void NZControllerProxy::getUserInfo(QString user) {
+  mController->askUserStatus(user.toStdString());
 }

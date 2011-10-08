@@ -12,6 +12,7 @@ nzgui:
 clean:
 	$(MAKE) -C md5 clean
 	$(MAKE) -C nzlib clean
+	$(MAKE) -C nzgui clean
 
 reset:
 	$(MAKE) -C md5 reset

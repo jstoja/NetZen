@@ -203,6 +203,9 @@ void NZController::cutCmd(const std::string& cmd) {
     std::string status = cmd.substr(commandBegin + 1, std::string::npos);
     status = status.substr(0, status.find(':'));
     mDelegate->userStatusChange(fromLogin, status);
+  } else if (strcmp(command, "who") == 0) {
+    std::string whoData = cmd.substr(commandBegin + 1, std::string::npos);
+    cutWho(fromLogin, whoData);
   }
 }
 
@@ -241,7 +244,9 @@ std::string NZController::urlDecode(const std::string& str) {
   while (pos != std::string::npos) {
     nos = str.find('%', pos);
     ret += str.substr(pos, nos - pos);
-    if (nos != std::string::npos) {
+    if (nos + 2 > str.length()) {
+      pos = nos + 1;
+    } else if (nos != std::string::npos) {
       nbr_s = str.substr(nos + 1, 2);
       sscanf(nbr_s.c_str(), "%X", &nbr_c);
       ret += (unsigned char)nbr_c;
@@ -252,6 +257,8 @@ std::string NZController::urlDecode(const std::string& str) {
     }
   }
 
+  std::cout << "[NZLib] Decoded this :" << ret << std::endl;
+  std::cout << "[NZLib] From this :" << str << std::endl;
   return ret;
 }
 
@@ -275,4 +282,43 @@ std::string NZController::md5(const std::string str) {
 
 std::string NZController::login(void) const {
   return mLogin;
+}
+
+void NZController::watchUser(const std::string& user) {
+  std::string cmd = "user_cmd watch_log_user {";
+  cmd.append(user);
+  cmd.append("}");
+
+  mSocket->sendData(cmd);
+}
+
+void NZController::askUserStatus(const std::string& user) {
+  std::string cmd = "user_cmd who {";
+  cmd.append(user);
+  cmd.append("}");
+
+  mSocket->sendData(cmd);
+}
+
+void NZController::cutWho(const std::string& user, const std::string& whoData) {
+  // [sock] [user] [ip] [logintime] [statustime] [trust/l] [trust/h] [workstation] [location]
+  // [group] [status:time] [userdata]
+
+  char location[128];
+  char status[128];
+
+  if (strncmp(whoData.c_str(), REP_OK, strlen(REP_OK)) == 0)
+    return ;
+
+  sscanf(whoData.c_str(),
+	 "%*s %*s %*s %*s %*s %*s %*s %*s %s %*s %s %*s",
+	 location, status);
+
+  std::string status_s = status;
+  // status_s = status_s.substr(0, status_s.find(':'));
+
+  mDelegate->userStatusChange(user, status_s);
+  mDelegate->locationChange(user, urlDecode(std::string(location)));
+
+  std::cout << "[NZLib] User " << user << " is at " << location << std::endl;
 }

@@ -51,6 +51,8 @@ public slots:
 			   QString userLocation, QString userData);
   void statusChangeRequested(NZContact::Status status);
   void relayMessage(NZMessage* message);
+  void watchUser(NZContact* contact);
+  void getUserInfo(NZContact* contact);
 
 signals:
   void contactAdded(NZContact* contact);
@@ -70,6 +72,8 @@ private slots:
   void authSucceededPrivate(void);
   void connectionError(int error);
   void receivedMessagePrivate(QString contactFrom, QString message);
+  void locationChangePrivate(QString user, QString location);
+  void userStatusChangePrivate(QString user, QString location);
 
 private:
   NZMainWindow* mainWindow;

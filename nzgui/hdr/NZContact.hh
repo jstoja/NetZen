@@ -62,7 +62,7 @@ public slots:
   void setUserImage(QPixmap userImage);
 
 signals:
-  void statusChanged(NZContact* who, Status status);
+  void statusChanged(NZContact* who, NZContact::Status status);
   void locationChanged(NZContact* who, QString location);
   void userDataChanged(NZContact* who, QString userData);
   void infoUpdated(NZContact* who);

@@ -34,6 +34,8 @@ public:
 	     const std::string& location, const std::string& userData);
   void changeStatus(const std::string& status);
   void sendMessage(const std::string& contactTo, const std::string& message);
+  void watchUser(const std::string& user);
+  void askUserStatus(const std::string& user);
 
   void loop(void);
 
@@ -50,6 +52,7 @@ private:
 
   void cutSalutString(const std::string& salut);
   void cutCmd(const std::string& cmd);
+  void cutWho(const std::string& user, const std::string& whoData);
 
   NZDelegate* mDelegate;
   NZSocket* mSocket;

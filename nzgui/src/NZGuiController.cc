@@ -27,7 +27,7 @@
 NZGuiController* NZGuiController::mInstance = NULL;
 
 NZGuiController::NZGuiController(QObject* parent) : QObject(parent),
-						    mGuiIcon(":/res/icon/256.png") {
+						    mGuiIcon(":/res/icon/48.png") {
   if (mInstance != NULL) {
     qCritical("Trying to allocate multiple NZGuiController's");
     abort();
@@ -38,10 +38,6 @@ NZGuiController::NZGuiController(QObject* parent) : QObject(parent),
   controller = new NZControllerProxy;
   mMe = NULL;
 
-  // mGuiIcon.addFile(":/res/icon/256.png", QSize(256, 256));
-  mGuiIcon.addFile(":/res/icon/128.png", QSize(128, 128));
-  mGuiIcon.addFile(":/res/icon/64.png", QSize(64, 64));
-  mGuiIcon.addFile(":/res/icon/48.png", QSize(48, 48));
   mGuiIcon.addFile(":/res/icon/32.png", QSize(32, 32));
   mGuiIcon.addFile(":/res/icon/16.png", QSize(16, 16));
 
@@ -73,6 +69,10 @@ NZGuiController::NZGuiController(QObject* parent) : QObject(parent),
 	  this, SLOT(statusChangeRequested(NZContact::Status)));
   connect(controller, SIGNAL(proxyReceivedMessage(QString, QString)),
 	  this, SLOT(receivedMessagePrivate(QString, QString)));
+  connect(controller, SIGNAL(proxyLocationChange(QString, QString)),
+	  this, SLOT(locationChangePrivate(QString, QString)));
+  connect(controller, SIGNAL(proxyUserStatusChange(QString, QString)),
+	  this, SLOT(userStatusChangePrivate(QString, QString)));
 
   mContactsChanged = false;
   mSettings.load();
@@ -347,4 +347,59 @@ void NZGuiController::receivedMessagePrivate(QString contactFrom, QString messag
 
 NZSettings* NZGuiController::settings(void) {
   return &mSettings;
+}
+
+void NZGuiController::locationChangePrivate(QString user, QString location) {
+  int i = 0;
+  NZContact* c;
+
+  while (i < mContactList.count()) {
+    c = mContactList.at(i);
+
+    if (c->login() == user) {
+      if (c->location() != location)
+	c->setLocation(location);
+      return ;
+    }
+
+    i++;
+  }
+}
+
+void NZGuiController::watchUser(NZContact* contact) {
+  controller->watchUser(contact->login());
+}
+
+void NZGuiController::getUserInfo(NZContact* contact) {
+  controller->getUserInfo(contact->login());
+}
+
+void NZGuiController::userStatusChangePrivate(QString user, QString location) {
+  int i = 0;
+  NZContact* c;
+  NZContact::Status s;
+
+  s = NZContact::nzDisconnected;
+  if (location == "connection")
+    s = NZContact::nzConnection;
+  else if (location == "actif")
+    s = NZContact::nzActif;
+  else if (location == "away")
+    s = NZContact::nzAway;
+  else if (location == "lock")
+    s = NZContact::nzLock;
+  else if (location == "server")
+    s = NZContact::nzServer;
+
+  while (i < mContactList.count()) {
+    c = mContactList.at(i);
+
+    if (c->login() == user) {
+      if (c->status() != s)
+	c->setStatus(s);
+      return ;
+    }
+
+    i++;
+  }  
 }

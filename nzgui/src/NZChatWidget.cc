@@ -41,6 +41,8 @@ NZChatWidget::NZChatWidget(NZConversation* conversation, QWidget* parent) : QWid
   mViewWrapper->setFrameShadow(QFrame::Sunken);
   mViewWrapper->setFrameShape(QFrame::StyledPanel);
 
+  qDebug("User %s (%p) status %d", qPrintable(conversation->contactTo()->login()),
+	 conversation->contactTo(), conversation->contactTo()->status());
   mUserIcon->setPixmap(conversation->contactTo()->generateUserImage());
   mUserIcon->setFixedSize(QSize(gIconSize, gIconSize));
 
@@ -62,6 +64,8 @@ NZChatWidget::NZChatWidget(NZConversation* conversation, QWidget* parent) : QWid
 
   connect(mConversation, SIGNAL(updated()), mView, SLOT(conversationUpdated()));
   connect(mEdit, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
+  connect(mConversation->contactTo(), SIGNAL(statusChanged(NZContact*, NZContact::Status)),
+	  this, SLOT(contactStatusChange(NZContact*, NZContact::Status)));
 }
 
 NZConversation* NZChatWidget::conversation(void) const {
@@ -80,4 +84,8 @@ void NZChatWidget::sendMessage(void) {
 }
 
 void NZChatWidget::resizeEvent(QResizeEvent*) {
+}
+
+void NZChatWidget::contactStatusChange(NZContact* who, NZContact::Status status) {
+  mUserIcon->setPixmap(who->generateUserImage());
 }

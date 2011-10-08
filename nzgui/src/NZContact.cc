@@ -17,10 +17,14 @@
 #include "NZContact.hh"
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>
+#include "NZGuiController.hh"
 
 NZContact::NZContact(const QString& login, Status status, QObject* parent) : QObject(parent) {
   mLogin = login;
   mStatus = status;
+
+  NZGuiController::instance()->watchUser(this);
+  NZGuiController::instance()->getUserInfo(this);
 }
 
 QString NZContact::login(void) const {
@@ -52,6 +56,8 @@ void NZContact::setStatus(Status status) {
     mStatus = status;
     emit statusChanged(this, status);
   }
+
+  qDebug("[%p %s] Status: %d", this, qPrintable(mLogin), mStatus);
 }
 
 void NZContact::setLocation(QString location) {
@@ -59,6 +65,8 @@ void NZContact::setLocation(QString location) {
     mLocation = location;
     emit locationChanged(this, location);
   }
+
+  qDebug("[%p %s] Location: %s", this, qPrintable(mLogin), qPrintable(mLocation));
 }
 
 void NZContact::setUserData(QString userData) {

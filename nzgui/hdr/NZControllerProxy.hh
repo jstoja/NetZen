@@ -47,6 +47,8 @@ public:
   void changeStatus(QString status);
   void sendMessage(QString contactTo, QString message);
   void close(void);
+  void watchUser(QString user);
+  void getUserInfo(QString user);
 
   QString login(void) const;
   bool isConnected(void) const;
@@ -59,6 +61,7 @@ public:
   void connectionError(int error);
   void authAllowed(void);
   void authSucceeded(void);
+  void locationChange(const std::string& user, const std::string& location);
 
 signals:
   void proxyReceivedMessage(QString contactFrom, QString message);
@@ -69,6 +72,7 @@ signals:
   void proxyConnectionError(int error);
   void proxyAuthAllowed(void);
   void proxyAuthSucceeded(void);
+  void proxyLocationChange(QString user, QString location);
   void connectionReset(void);
 
 protected:

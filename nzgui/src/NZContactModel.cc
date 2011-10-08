@@ -94,6 +94,14 @@ void NZContactModel::addContact(NZContact* contact) {
 
   beginInsertRows(QModelIndex(), v, v);
   mContacts.insert(v, contact);
+  connect(contact, SIGNAL(statusChanged(NZContact*, NZContact::Status)),
+	  this, SLOT(contactUpdated(NZContact*)));
+  connect(contact, SIGNAL(locationChanged(NZContact*, QString)),
+	  this, SLOT(contactUpdated(NZContact*)));
+  connect(contact, SIGNAL(userDataChanged(NZContact*, QString)),
+	  this, SLOT(contactUpdated(NZContact*)));
+  connect(contact, SIGNAL(infoUpdated(NZContact*)),
+	  this, SLOT(contactUpdated(NZContact*)));
   endInsertRows();
 }
 
@@ -102,6 +110,14 @@ void NZContactModel::removeContact(NZContact* contact) {
 
   beginRemoveRows(QModelIndex(), i, i);
   mContacts.removeAt(i);
+  disconnect(contact, SIGNAL(statusChanged(NZContact*, NZContact::Status)),
+	     this, SLOT(contactUpdated(NZContact*)));
+  disconnect(contact, SIGNAL(locationChanged(NZContact*, QString)),
+	     this, SLOT(contactUpdated(NZContact*)));
+  disconnect(contact, SIGNAL(userDataChanged(NZContact*, QString)),
+	     this, SLOT(contactUpdated(NZContact*)));
+  disconnect(contact, SIGNAL(infoUpdated(NZContact*)),
+	     this, SLOT(contactUpdated(NZContact*)));
   endRemoveRows();
 }
 
@@ -143,7 +159,10 @@ QModelIndex NZContactModel::modelIndexForContact(NZContact* contact, int column)
 }
 
 void NZContactModel::contactUpdated(NZContact* who) {
-  QModelIndex i = modelIndexForContact(who);
+  int i = indexForContact(who);
 
-  emit dataChanged(i, i);
+  qDebug("Row %d updated", i);
+
+  emit dataChanged(sibling(i, 0, QModelIndex()),
+		   sibling(i, columnCount(QModelIndex()), QModelIndex()));
 }

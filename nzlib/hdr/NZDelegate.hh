@@ -32,6 +32,7 @@ public:
   virtual void connectionError(int error) = 0;
   virtual void authAllowed(void) = 0;
   virtual void authSucceeded(void) = 0;
+  virtual void locationChange(const std::string& user, const std::string& location) = 0;
 };
 
 #endif
