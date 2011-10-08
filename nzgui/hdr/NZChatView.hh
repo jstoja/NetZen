@@ -33,6 +33,7 @@ public:
 
 public slots:
   void conversationUpdated(void);
+  void conversationViewUpdated();
 
 private slots:
   void doneLoading(void);

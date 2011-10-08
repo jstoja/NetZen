@@ -32,6 +32,7 @@ NZChatView::NZChatView(NZConversation* conversation, QWidget* parent) : QWebView
   connect(this, SIGNAL(loadFinished(bool)), this, SLOT(doneLoading()));
   load(QUrl("qrc:/res/html/conversation.html"));
   lastAddedMessage = NULL;
+  connect(page()->mainFrame(), SIGNAL(contentsSizeChanged(QSize)), this, SLOT(conversationViewUpdated()));
 }
 
 void NZChatView::conversationUpdated(void) {
@@ -72,4 +73,8 @@ void NZChatView::doneLoading(void) {
 
   lastAddedMessage = NULL;
   conversationUpdated();
+}
+
+void NZChatView::conversationViewUpdated(void) {
+  page()->mainFrame()->setScrollBarValue(Qt::Vertical, page()->mainFrame()->scrollBarMaximum(Qt::Vertical));
 }
