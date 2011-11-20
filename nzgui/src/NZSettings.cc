@@ -18,7 +18,7 @@
 #include <QtCore/QFile>
 #include "NZSettings.hh"
 
-#define NZSETTINGS_MAGIC 0x312e736461ul
+#define NZSETTINGS_MAGIC 0x312e7364UL
 
 struct NZSettingsKey {
   QString keyName;
