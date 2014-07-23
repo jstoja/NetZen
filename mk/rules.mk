@@ -20,7 +20,7 @@ endif
 
 ifeq "$(SYSTEM)" "Darwin"
 CC		:= $(CC) -arch i386
-CXX		:= $(CC) -arch i386
+CXX		:= $(CXX) -arch i386
 endif
 
 CFLAGS		+= -Wall -Wextra -std=c99 -I${HDRDIR} -ggdb
